@@ -1,0 +1,63 @@
+kind: pipeline
+name: hello
+type: docker
+
+# clone:
+#   depth: 10 
+
+steps:
+  - name: build
+    image: golang:1.11.4
+    environment:
+      TZ: Asia/Shanghai
+    failure: ignore
+    commands:
+      - pwd
+      - go version
+      - go env
+      - go build
+
+  - name: publish  
+    image: plugins/docker
+    settings:
+      username: nodezhang 
+      password: 19921001
+      registry: index.docker.io
+      repo: index.docker.io/nodezhang/hello-demo
+      debug: true
+      dockerfile: Dockerfile
+      tags: v1.0.0
+
+    when:
+      branch:
+        - master
+        - develop
+      event:
+        - push
+  
+  - name: deploy
+    image: appleboy/drone-ssh
+    pull: true
+    settings:
+    host: 47.99.212.97
+    user: root
+    password: Zxx19921001
+    port: 10022
+    command_timeout: 2m
+    script:
+      - cd /go/src
+      - mkdir app/
+      - cd /go/src/app
+      - name=hello-demo
+      - image=nodezhang/hello-demo:v1.0.0
+      - docker rmi -f $image
+      - echo "login docker"
+      - echo "login success, pulling..."
+      - docker pull image
+      - echo "image running"
+      - docker run -it --name=$name -d -p 8000:8000 $image
+      - echo "run success!!!"
+
+
+
+
