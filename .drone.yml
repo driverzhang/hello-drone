@@ -20,8 +20,10 @@ steps:
   - name: publish  
     image: plugins/docker
     settings:
-      username: nodezhang 
-      password: 19921001
+      username:
+        from_secret: nodezhang
+      password:
+        from_secret: password
       registry: index.docker.io
       repo: index.docker.io/nodezhang/hello-demo
       debug: true
