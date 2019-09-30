@@ -24,8 +24,8 @@ steps:
         from_secret: nodezhang
       password:
         from_secret: password
-      registry: index.docker.io
-      repo: index.docker.io/nodezhang/hello-demo
+      # registry: index.docker.io
+      repo: nodezhang/hello-demo
       debug: true
       dockerfile: Dockerfile
       tags: v1.0.0
